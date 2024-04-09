@@ -37,8 +37,9 @@ int multliplicativeInverse(int a, int b) {
 
 int main(int argc, const char* argv[]){
     if (argc != 3) {
-        perror("invalid argument numbers");
-        return EINVAL;
+        errno=EINVAL;
+        perror("Invalid arguments number");
+        exit(EXIT_FAILURE);
     } 
     
     int a = atoi(argv[1]);

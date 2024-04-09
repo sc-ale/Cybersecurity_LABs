@@ -17,7 +17,7 @@ unsigned int binaryLenght(int c) {
 int squareNmultiply(int x, int c, int n) {
     int z = 1;
     
-    for (int i = 0; i < binaryLenght(c)-1; i++) {
+    for (int i = binaryLenght(c)-1; i >= 0  ; i--) {
         z = (z * z) % n;
         if (IS_BIT_SET(c, i)) {
             z = (z * x) % n;
