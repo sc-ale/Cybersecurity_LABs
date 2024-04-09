@@ -3,38 +3,38 @@
 #include <stdlib.h>
 #include <errno.h>
 
-int* euclideanAlgExt(int a, int b) {
+
+//result[3] = r,s,t
+void euclideanAlgExt(int a, int b, int* result) {
     int a0 = a;
     int b0 = b;
     int t0 = 0;
-    int t = 1;
+    result[2] = 1;
     int s0 = 1;
-    int s = 0;
+    result[1] = 0;
     int q = floor(a0/b0);
-    int r = a0 - q*b0;
+    result[0] = a0 - q*b0;
     int temp;
 
-    while (r>0) {
-        temp = t0 - q*t;
-        t0 = t;
-        t = temp;
-        temp = s0 - q*s;
-        s0 = s;
-        s = temp;
+    while (result[0]>0) {
+        temp = t0 - q*result[2];
+        t0 = result[2];
+        result[2] = temp;
+        temp = s0 - q*result[1];
+        s0 = result[1];
+        result[1] = temp;
         a0 = b0;
-        b0 = r;
+        b0 = result[0];
         q = floor(a0/b0);
-        r = a0 - q*b0;
+        result[0] = a0 - q*b0;
     }
-    r = b0;
-    printf("gcd:(%d,%d) = %d*%d+%d*%d = %d\n", a, b, s, a, t, b, r);
-    
-    int *result = {r,s,t};
-    return result;
+    result[0] = b0;
+    printf("gcd(%d,%d) = %d*%d+%d*%d = %d\n", a, b, result[1], a, result[2], b, result[0]);
 }
 
 
 int main(int argc, const char* argv[]){
+
     if (argc != 3) {
         perror("invalid argument numbers\n");
         return EINVAL;
@@ -43,11 +43,13 @@ int main(int argc, const char* argv[]){
     int a = atoi(argv[1]);
     int b = atoi(argv[2]);
 
+    int result[3] = {0,0,0};
+
     if (a < 0 || b < 0) {
         perror("arguments must be positive\n");
         return EINVAL;
     }
 
-    euclideanAlgExt(a, b);
-
+    euclideanAlgExt(a, b, result);
+    return 0;
 } 
