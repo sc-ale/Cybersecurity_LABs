@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <errno.h>
 
-
 //result[3] = r,s,t
 void euclideanAlgExt(int a, int b, int* result) {
     int a0 = a;
@@ -14,15 +13,15 @@ void euclideanAlgExt(int a, int b, int* result) {
     result[1] = 0;
     int q = floor(a0/b0);
     result[0] = a0 - q*b0;
-    int temp;
+    int tmp;
 
     while (result[0]>0) {
-        temp = t0 - q*result[2];
+        tmp = t0 - q*result[2];
         t0 = result[2];
-        result[2] = temp;
-        temp = s0 - q*result[1];
+        result[2] = tmp;
+        tmp = s0 - q*result[1];
         s0 = result[1];
-        result[1] = temp;
+        result[1] = tmp;
         a0 = b0;
         b0 = result[0];
         q = floor(a0/b0);
