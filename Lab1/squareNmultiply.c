@@ -17,7 +17,7 @@ unsigned int binaryLenght(int c) {
 int squareNmultiply(int x, int c, int n) {
     int z = 1;
     
-    for (int i = 0; i < binaryLenght(c)-1; i++) {
+    for (int i = binaryLenght(c)-1; i >= 0  ; i--) {
         z = (z * z) % n;
         if (IS_BIT_SET(c, i)) {
             z = (z * x) % n;
@@ -30,8 +30,9 @@ int squareNmultiply(int x, int c, int n) {
 
 int main(int argc, const char* argv[]){
     if (argc != 4) {
-        perror("invalid argument numbers\n");
-        return EINVAL;
+        errno=EINVAL;
+        perror("Invalid arguments number");
+        exit(EXIT_FAILURE);
     } 
     
     int x = atoi(argv[1]);
@@ -39,8 +40,9 @@ int main(int argc, const char* argv[]){
     int n = atoi(argv[3]);
 
     if (n < 0) {
-        perror("argument must be positive\n");
-        return EINVAL;
+        errno=EINVAL;
+        perror("Third argument must be positive");
+        exit(EXIT_FAILURE);
     }
 
     squareNmultiply(x, c, n);

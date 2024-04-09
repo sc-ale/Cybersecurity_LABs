@@ -35,8 +35,9 @@ void euclideanAlgExt(int a, int b, int* result) {
 int main(int argc, const char* argv[]){
 
     if (argc != 3) {
-        perror("invalid argument numbers\n");
-        return EINVAL;
+        errno=EINVAL;
+        perror("Invalid arguments number");
+        exit(EXIT_FAILURE);
     } 
     
     int a = atoi(argv[1]);
@@ -45,8 +46,9 @@ int main(int argc, const char* argv[]){
     int result[3] = {0,0,0};
 
     if (a < 0 || b < 0) {
-        perror("arguments must be positive\n");
-        return EINVAL;
+        errno=EINVAL;
+        perror("arguments must be positive");
+        exit(EXIT_FAILURE);
     }
 
     euclideanAlgExt(a, b, result);
