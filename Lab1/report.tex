@@ -1,0 +1,304 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{xcolor}
+\usepackage{listings}
+
+\definecolor{mGreen}{rgb}{0,0.6,0}
+\definecolor{mGray}{rgb}{0.5,0.5,0.5}
+\definecolor{mPurple}{rgb}{0.58,0,0.82}
+\definecolor{backgroundColour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{CStyle}{
+    backgroundcolor=\color{backgroundColour},   
+    commentstyle=\color{mGreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{mGray},
+    stringstyle=\color{mPurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    language=C
+}
+
+\lstset{
+    basicstyle=\ttfamily\small
+}
+
+\setlength{\parindent}{0pt}
+
+\title{ReportLab1}
+\author{Alessandro Ravveduto: 1020539\\
+Francesco Testa: 1029406\\
+Mattia Lodi: 1020617}
+\date{09 Aprile 2024}
+
+\begin{document}
+\maketitle
+
+\section{Implementazione Algoritmi C}
+Nel riportare le implementazioni \`{e} stato omesso il main. Ogni programma controlla il numero dei parametri per poi chiamare la funzione corrispondente. Per la visualizzazione dei risultati basti vedere l'output sul terminale. 
+\subsection{Euclidean Algorithm}
+\begin{lstlisting}[style=CStyle]
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+
+struct listOfNumbers
+{
+    int number;
+    struct listOfNumbers* next;
+};
+
+struct listOfNumbers* addNumber(struct listOfNumbers* head, int number) {
+    struct listOfNumbers* newNum = malloc(sizeof(struct listOfNumbers));
+    if (newNum == NULL) {
+        perror("malloc failed\n");
+        exit(EXIT_FAILURE);
+    };
+    newNum->next = NULL;
+    newNum->number = number;
+
+    if (head == NULL) {
+        head = newNum;
+    } else {
+        struct listOfNumbers* tmp = head;
+        while (tmp->next != NULL) {
+            tmp = tmp->next;
+        }
+        tmp->next = newNum;
+    }
+    return head;
+}
+
+void printQuotients(struct listOfNumbers* head) {
+    struct listOfNumbers* current = head;
+    printf("Quotients (from 1 to m):\n");
+    int i=1;
+    while (current != NULL) {
+        printf("q%d: %d\n", i, current->number);
+        current = current->next;
+        i++;
+    }
+}
+
+void euclideanAlg(int a, int b) {
+
+    struct listOfNumbers* allQuotients = NULL;    
+    
+    int qCurrent;
+    int rPrec = a;
+    int rCurrent = b;
+    int rNew;
+    
+    while(rCurrent != 0) {
+        qCurrent = floor(rPrec/rCurrent);
+        rNew = rPrec - qCurrent*rCurrent;
+        allQuotients = addNumber(allQuotients, qCurrent);
+        rPrec = rCurrent;
+        rCurrent = rNew;
+    }
+
+    printQuotients(allQuotients);
+    printf("r: %d\n", rPrec);
+}
+\end{lstlisting}
+Per la gestione della lista di q da ritornare \`{e} stato necessario implementare una struct che la gestisca. L'addNumber inserisce un nodo in coda, mentre il printQuotients serve per stampare tutti i quozienti.
+\subsection{Extended Euclidean Algorithm}
+\begin{lstlisting}[style=CStyle]
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+
+
+//result[3] = r,s,t
+void euclideanAlgExt(int a, int b, int* result) {
+    int a0 = a;
+    int b0 = b;
+    int t0 = 0;
+    result[2] = 1;
+    int s0 = 1;
+    result[1] = 0;
+    int q = floor(a0/b0);
+    result[0] = a0 - q*b0;
+    int temp;
+
+    while (result[0]>0) {
+        temp = t0 - q*result[2];
+        t0 = result[2];
+        result[2] = temp;
+        temp = s0 - q*result[1];
+        s0 = result[1];
+        result[1] = temp;
+        a0 = b0;
+        b0 = result[0];
+        q = floor(a0/b0);
+        result[0] = a0 - q*b0;
+    }
+    result[0] = b0;
+    printf("gcd:(%d,%d) = %d*%d+%d*%d = %d\n", a, b, result[1], a, result[2], b, result[0]);
+}
+
+\end{lstlisting}
+Nel main \`{e} inizializzato un array di 3 elementi e passato alla funzione.
+
+\subsection{Multiplicative Inverse}
+\begin{lstlisting}[style=CStyle]
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+
+int multliplicativeInverse(int a, int b) {
+    int a0 = a;
+    int b0 = b;
+    int t0 = 0;
+    int t = 1;
+    
+    
+    int q = floor(a0/b0);
+    int r = a0 - q*b0;
+    int temp;
+
+    while (r>0) {
+        temp = (t0 - q*t) % a;
+        t0 = t;
+        t = temp;
+    
+        a0 = b0;
+        b0 = r;
+        q = floor(a0/b0);
+        r = a0 - q*b0;
+    }
+
+    if (b0 != 1) {
+        printf("No multiplicative inverse\n");
+        return -1;
+    }
+
+    printf("Multiplicative inverse of %d mod %d is %d\n", a, b, t);
+    return t;
+}
+
+\end{lstlisting}
+
+\subsection{Square and Multiply}
+\begin{lstlisting}[style=CStyle]
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+
+#define IS_BIT_SET(n,x) ((n & (1 << x)))
+
+unsigned int binaryLenght(int c) {
+    unsigned int bits;                              
+    unsigned var = (c<0) ? -c : c;              
+    for (bits = 0; var!=0; bits++) var >>= 1;                                    
+    return bits;
+}
+
+
+int squareNmultiply(int x, int c, int n) {
+    int z = 1;
+    
+    for (int i = binaryLenght(c)-1; i >= 0  ; i--) {
+        z = (z * z) % n;
+        if (IS_BIT_SET(c, i)) {
+            z = (z * x) % n;
+        }
+    }
+    printf("%d^%d mod %d = %d\n", x, c, n, z);
+    return z;
+}
+\end{lstlisting}
+Per calcolare la lunghezza \(\ell\) dell'esponente \`{e} stata implementata una funzione ausiliaria, mentre per accedere al singolo bit nell'iterazione sono stati utilizzati gli operatori bitwise. 
+
+A partire da questi calcoli \`{e} stato implementato l'algoritmo presente sulle slide.
+
+\section{test}
+Per compilare \`{e} necessario eseguire \lstinline{make}.
+
+Per eliminare i compilati si pu\`{o} eseguire \lstinline{make clean}.
+\subsection{Esercizio 1}
+Compute gcd(57, 93) using the Euclidean algorithm, and find integers s and t such that 57s + 93t = gcd(57, 93).
+
+\begin{lstlisting}[language=bash]
+$ ./gcdExt 57 93        
+$ gcd(57,93) = -13*57+8*93 = 3
+\end{lstlisting}
+
+\subsection{Esercizio 2}
+Compute the following multiplicative inverses: 
+\begin{itemize}
+    \item \(17^{-1} \, mod \, 101\)
+    \begin{lstlisting}[language=bash]
+$ ./multiplicativeInverse 17 101                      
+$ Multiplicative inverse of 17 mod 101 is -1
+    \end{lstlisting}                       
+
+    \item \(357^{-1} \, mod \, 1234\)
+    \begin{lstlisting}[language=bash]
+$ ./multiplicativeInverse 357 1234              
+$ Multiplicative inverse of 357 mod 1234 is 46
+    \end{lstlisting}
+    \item \(3125^{-1} \, mod \, 9987\)
+    \begin{lstlisting}[language=bash]
+$ ./multiplicativeInverse 3125 9987
+$ Multiplicative inverse of 3125 mod 9987 is -577
+    \end{lstlisting}
+\end{itemize}
+
+\subsection{Esercizio 3}
+Suppose Bob chooses p = 101 and q = 113. Then n = 11413 and \(\phi\)(n) = 100 × 112 = 11200. Since 11200 = 26527, an integer b can be used as an encryption exponent if and only if b is not divisible by 2, 5, or 7.
+
+Suppose Bob chooses b = 3533.
+\begin{itemize}
+    \item  Please verify that gcd(\(\phi\)(n), b) = 1 using the Euclidean Algo.
+    \begin{lstlisting}[language=bash]
+$ ./Gcd 11200 3533
+$ Quotients (from 1 to m):
+$ q1: 3
+$ q2: 5
+$ q3: 1
+$ q4: 7
+$ q5: 4
+$ q6: 3
+$ q7: 2
+$ q8: 2
+$ r: 1
+    \end{lstlisting}
+    \item Now compute Bob’s secret decryption exponent, a, using the Multiplicative Inverse Algorithm 
+        \begin{lstlisting}
+$ ./multiplicativeInverse 11413 3533
+$ Multiplicative inverse of 11413 mod 3533 is -4697
+        \end{lstlisting}    
+
+\end{itemize}
+
+Bob publishes n = 11413 and b = 3533 in a directory.
+
+Now, suppose Alice wants to encrypt the plaintext 9726 to send to Bob. She will compute \(9726^{3533}\,  mod  \, 11413 \) and send the ciphertext c over the channel.
+
+\begin{itemize}
+    \item Please determine c’s value using the square and multiply algorithm
+    \begin{lstlisting}[language=bash]
+$ ./SquareAndMultiply 9726 3533 11413
+$ 9726^3533 mod 11413 = 5761
+    \end{lstlisting}
+    Il ciphertext c quindi \`{e} 5761.
+\end{itemize}
+
+When Bob receives the ciphertext c, he uses his secret decryption exponent a to compute the plaintext sent by Alice.
+
+
+\end{document}

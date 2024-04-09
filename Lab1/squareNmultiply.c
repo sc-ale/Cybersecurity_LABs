@@ -5,14 +5,12 @@
 
 #define IS_BIT_SET(n,x) ((n & (1 << x)))
 
-
 unsigned int binaryLenght(int c) {
     unsigned int bits;                              
     unsigned var = (c<0) ? -c : c;              
     for (bits = 0; var!=0; bits++) var >>= 1;                                    
     return bits;
 }
-
 
 int squareNmultiply(int x, int c, int n) {
     int z = 1;
