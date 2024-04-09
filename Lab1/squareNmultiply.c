@@ -30,8 +30,9 @@ int squareNmultiply(int x, int c, int n) {
 
 int main(int argc, const char* argv[]){
     if (argc != 4) {
-        perror("invalid argument numbers\n");
-        return EINVAL;
+        errno=EINVAL;
+        perror("Invalid arguments number");
+        exit(EXIT_FAILURE);
     } 
     
     int x = atoi(argv[1]);
@@ -39,8 +40,9 @@ int main(int argc, const char* argv[]){
     int n = atoi(argv[3]);
 
     if (n < 0) {
-        perror("argument must be positive\n");
-        return EINVAL;
+        errno=EINVAL;
+        perror("Third argument must be positive");
+        exit(EXIT_FAILURE);
     }
 
     squareNmultiply(x, c, n);

@@ -37,7 +37,7 @@ int multliplicativeInverse(int a, int b) {
 
 int main(int argc, const char* argv[]){
     if (argc != 3) {
-        perror("invalid argument numbers\n");
+        perror("invalid argument numbers");
         return EINVAL;
     } 
     
@@ -45,8 +45,9 @@ int main(int argc, const char* argv[]){
     int b = atoi(argv[2]);
 
     if (a < 0 || b < 0) {
-        perror("arguments must be positive\n");
-        return EINVAL;
+        errno=EINVAL;
+        perror("arguments must be positive");
+        exit(EXIT_FAILURE);
     }
 
     multliplicativeInverse(a, b);

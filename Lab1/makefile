@@ -1,8 +1,8 @@
 CC = gcc
 
-algs: gcdExt.c multiplacativeInverse.c squareNmultiply.c
+algs: gcdExt.c multiplicativeInverse.c squareNmultiply.c
 	gcc -o ExtendedEuclideAlg gcdExt.c
-	gcc -o MultiplicativeInverseAlg multiplacativeInverse.c 
+	gcc -o MultiplicativeInverseAlg multiplicativeInverse.c 
 	gcc -o SquareAndMultiply squareNmultiply.c 
 
 clean: 
