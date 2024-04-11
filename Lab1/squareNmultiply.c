@@ -12,13 +12,20 @@ unsigned int binaryLenght(int c) {
     return bits;
 }
 
+int modulo(int a, int b){
+    int m = a % b;
+    if(m < 0)
+        m = (b < 0) ? m - b : m + b;
+    return m;
+}
+
 int squareNmultiply(int x, int c, int n) {
     int z = 1;
     
     for (int i = binaryLenght(c)-1; i >= 0  ; i--) {
         z = (z * z) % n;
         if (IS_BIT_SET(c, i)) {
-            z = (z * x) % n;
+            z = modulo(z*x, n);
         }
     }
     printf("%d^%d mod %d = %d\n", x, c, n, z);
